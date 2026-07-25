@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mirror — Personal Cognitive Exoskeleton (PCE)</title>
+<meta name="description" content="An AI that belongs to you: thinks locally, remembers you, runs on hardware you already own.">
+<style>
+:root{
+  --bg:#0b0e14; --bg2:#10141d; --card:#141926; --line:#232a3a;
+  --fg:#e8eaf0; --dim:#9aa3b5; --dimmer:#6b7488;
+  --gold:#e8b23a; --gold2:#f7d774; --gold3:#b97f14;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","PingFang SC","Noto Sans SC",sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+a{color:var(--gold2);text-decoration:none}
+a:hover{text-decoration:underline}
+.goldtext{background:linear-gradient(120deg,var(--gold2),var(--gold) 45%,var(--gold3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.zh-link{position:fixed;top:14px;right:16px;z-index:9;background:rgba(20,25,38,.85);border:1px solid var(--line);border-radius:20px;padding:5px 14px;font-size:.9rem;backdrop-filter:blur(6px)}
+header{padding:96px 0 40px;text-align:center;background:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(232,178,58,.13),transparent)}
+.hero h1{font-size:clamp(1.9rem,5.4vw,3.2rem);font-weight:800;letter-spacing:.01em}
+.hero .sub{font-style:italic;font-size:clamp(1.05rem,2.6vw,1.35rem);color:var(--gold2);margin-top:14px}
+.hero .one{color:var(--dim);max-width:560px;margin:18px auto 0;font-size:clamp(.98rem,2.2vw,1.08rem)}
+.ridge{display:block;width:min(420px,80%);margin:36px auto 0}
+section{padding:56px 0}
+h2.sec{font-size:clamp(1.3rem,3.4vw,1.7rem);font-weight:750;text-align:center;margin-bottom:8px}
+p.secnote{color:var(--dim);text-align:center;margin-bottom:30px;font-size:.95rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 18px}
+.card .num{font-size:.8rem;color:var(--gold);font-weight:700;letter-spacing:.12em}
+.card h3{font-size:1.02rem;margin:6px 0 6px}
+.card p{color:var(--dim);font-size:.92rem}
+/* poem */
+.poem{font-family:Georgia,"Times New Roman","Songti SC","Noto Serif SC",serif;text-align:center;line-height:1.9}
+.poem .stanza{margin:34px 0}
+.poem .en{font-size:1.06rem}
+.poem .cn{color:var(--dim);font-size:.98rem;margin-top:8px}
+/* two roads */
+table.roads{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.94rem}
+table.roads th{background:var(--bg2);padding:13px 14px;text-align:left;font-size:.98rem;border-bottom:1px solid var(--line)}
+table.roads th:last-child{color:var(--gold2)}
+table.roads td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--dim);vertical-align:top;width:50%}
+table.roads td:last-child{color:var(--fg)}
+table.roads tr:last-child td{border-bottom:none}
+.tblwrap{overflow-x:auto}
+/* aphorism */
+.aphorism{text-align:center;padding:72px 0}
+.aphorism .big{font-size:clamp(1.35rem,4vw,2.1rem);font-weight:800;line-height:1.5}
+.aphorism .cn{font-size:clamp(1.05rem,3vw,1.5rem);margin-top:6px;font-weight:650}
+.aphorism .pair+.pair{margin-top:34px}
+/* origin */
+.origin{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.origin .code{color:var(--dimmer);font-size:.88rem;letter-spacing:.18em;text-transform:uppercase;text-align:center}
+.origin h2{font-size:clamp(1.4rem,3.8vw,1.9rem);text-align:center;margin:8px 0 18px}
+.origin .tag{font-family:Georgia,"Songti SC",serif;font-style:italic;text-align:center;font-size:clamp(1rem,2.6vw,1.2rem);margin-bottom:20px}
+.origin .tribute,.origin .watch{color:var(--dim);text-align:center;max-width:640px;margin:0 auto 14px;font-size:.95rem}
+.origin .watch{font-family:Georgia,"Songti SC",serif;font-style:italic;color:var(--gold2)}
+.origin .meta{text-align:center;color:var(--dimmer);font-size:.9rem;letter-spacing:.06em;margin-top:22px}
+/* buttons */
+.btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;padding:48px 0 8px}
+.btn{display:inline-block;padding:13px 26px;border-radius:10px;font-weight:650;font-size:1rem}
+.btn.primary{background:linear-gradient(120deg,var(--gold2),var(--gold));color:#151007}
+.btn.primary:hover{text-decoration:none;filter:brightness(1.08)}
+.btn.ghost{border:1px solid var(--line);color:var(--fg);background:var(--card)}
+.btn.ghost:hover{text-decoration:none;border-color:var(--gold3)}
+/* zh section */
+.zh{border-top:1px solid var(--line);background:var(--bg2)}
+.zh h2.sec{margin-top:8px}
+.zh h3{font-size:1.12rem;margin:36px 0 12px;color:var(--gold2)}
+.zh p,.zh li{color:var(--dim);font-size:.97rem}
+.zh strong{color:var(--fg)}
+.zh .aph{text-align:center;margin-top:48px;font-weight:750;font-size:1.15rem;line-height:2}
+footer{padding:44px 0 60px;text-align:center;color:var(--dimmer);font-size:.9rem}
+footer .dot{margin:0 8px;color:var(--line)}
+</style>
+</head>
+<body>
+
+<a class="zh-link" href="#zh" lang="zh">中文</a>
+
+<header>
+  <div class="wrap hero">
+    <h1><span class="goldtext">Mirror</span> — Personal Cognitive Exoskeleton (PCE)</h1>
+    <p class="sub">Strengthen everything, replace nothing.</p>
+    <p class="one">An AI that belongs to you: thinks locally, remembers you, runs on hardware you already own.</p>
+    <svg class="ridge" viewBox="0 0 420 70" fill="none" aria-hidden="true">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="420" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#b97f14"/><stop offset=".45" stop-color="#f7d774"/><stop offset="1" stop-color="#8f6210"/>
+      </linearGradient></defs>
+      <path d="M0 62 L58 34 L96 48 L152 12 L198 40 L252 6 L302 44 L352 26 L420 62" stroke="url(#g)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+  </div>
+</header>
+
+<section id="criteria">
+  <div class="wrap">
+    <h2 class="sec">The Six Criteria</h2>
+    <p class="secnote">A system qualifies as a PCE only if it meets all six:</p>
+    <div class="cards">
+      <div class="card"><div class="num">01</div><h3>User-owned</h3><p>The agent is yours; it exists without any vendor account</p></div>
+      <div class="card"><div class="num">02</div><h3>Thinks locally</h3><p>Core reasoning runs on the user's own device</p></div>
+      <div class="card"><div class="num">03</div><h3>Long-term memory</h3><p>It remembers you across days, months, years</p></div>
+      <div class="card"><div class="num">04</div><h3>Architecture-level privacy</h3><p>Enforced by design, not by promise</p></div>
+      <div class="card"><div class="num">05</div><h3>Cross-ecosystem neutral</h3><p>Not locked to any vendor's ecosystem</p></div>
+      <div class="card"><div class="num">06</div><h3>Runs on hardware you already own</h3><p>No new phone required</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="why-mirror">
+  <div class="wrap">
+    <h2 class="sec">Why &ldquo;Mirror&rdquo; <span style="color:var(--dimmer);font-weight:400">／</span> <span lang="zh">镜为何物</span></h2>
+    <div class="poem">
+      <div class="stanza">
+        <p class="en">A mirror does not speak over you.<br>It shows you to yourself, clearer.</p>
+        <p class="cn" lang="zh">镜子不会替你说话，<br>它只把你照得更清楚。</p>
+      </div>
+      <div class="stanza">
+        <p class="en">An exoskeleton has no heartbeat of its own.<br>It moves when you move —<br>and all its strength counts as yours.</p>
+        <p class="cn" lang="zh">外骨骼没有自己的心跳。<br>你动，它才动——<br>它的全部力气，都算你的。</p>
+      </div>
+      <div class="stanza">
+        <p class="en">Many are building a new center for the phone.<br>We looked, and saw the seat was never empty:<br>it has always been you.</p>
+        <p class="cn" lang="zh">许多人在为手机建造新的中心。<br>我们看了看，发现那个位置从来不曾空着——<br>一直坐在那里的，是你。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="two-roads">
+  <div class="wrap">
+    <h2 class="sec">Two Roads <span style="color:var(--dimmer);font-weight:400">／</span> <span lang="zh">两条路</span></h2>
+    <p class="secnote">&nbsp;</p>
+    <div class="tblwrap">
+    <table class="roads">
+      <thead><tr><th>An Agent OS</th><th>A PCE</th></tr></thead>
+      <tbody>
+        <tr><td>Ships with a new phone</td><td>Runs on the phone you already own</td></tr>
+        <tr><td>Your assistant lives inside a vendor account</td><td>Your assistant exists without any account</td></tr>
+        <tr><td>Memory feeds the platform's user profile</td><td>Memory stays yours — stored locally, exportable anytime</td></tr>
+        <tr><td>Privacy is a clause in the terms</td><td>Privacy is a gate in the architecture</td></tr>
+        <tr><td>Locks into one ecosystem</td><td>Ecosystem-neutral — even other agents become resources it calls for you</td></tr>
+        <tr><td>Replaces your apps with its own flows</td><td>Strengthens everything, replaces nothing</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<section class="aphorism">
+  <div class="wrap">
+    <div class="pair">
+      <p class="big goldtext">A promise can be broken. An architecture cannot.</p>
+      <p class="cn goldtext" lang="zh">承诺会被打破，架构不会。</p>
+    </div>
+    <div class="pair">
+      <p class="big goldtext">Sovereignty and memory belong to the user.</p>
+      <p class="cn goldtext" lang="zh">主权与记忆，归于用户。</p>
+    </div>
+  </div>
+</section>
+
+<section class="origin" id="mirror-origin">
+  <div class="wrap">
+    <p class="code">Codename · Kawagebo</p>
+    <h2 class="goldtext">Mirror-Origin</h2>
+    <p class="tag">&ldquo;Born only to carry you across into the AI era&rdquo;<span lang="zh">（只为渡你入AI新时代）</span></p>
+    <p class="tribute"><em>Kawagebo</em> is the sacred peak of the Meili range that no one may summit; we borrow the name in tribute.</p>
+    <p class="watch">The mountain is not there to be climbed. It is there to watch over the valley.<br><span lang="zh">神山不供攀登，只作守望。</span></p>
+    <p class="meta">source-open · September 2026</p>
+    <div class="btns">
+      <a class="btn primary" href="https://github.com/MirrorPCE/pce-spec">Read the Spec</a>
+      <a class="btn ghost" href="https://x.com/MirrorPCE">Follow on X</a>
+    </div>
+  </div>
+</section>
+
+<section class="zh" id="zh" lang="zh">
+  <div class="wrap">
+    <h2 class="sec">中文</h2>
+
+    <h3>PCE是什么</h3>
+    <p><strong>PCE——个人认知外骨骼（Personal Cognitive Exoskeleton）</strong>：一个属于你的AI。它在本地思考、长期记得你、隐私由架构保证而非承诺保证、跨生态中立、跑在你已经拥有的硬件上。</p>
+    <p style="margin-top:10px"><strong>站位</strong>：我们不是操作系统，也不是又一个Agent平台。PCE不与OS争位、不与Agent争位、不与云争位——它只站在用户身边。你想用什么，它就替你去用。<strong>强化一切，取代无物。</strong> 判据只有一条：主权和记忆归用户。</p>
+
+    <h3>六判据</h3>
+    <p>①用户拥有 ②本地思考 ③长期记忆 ④架构级隐私 ⑤跨生态中立 ⑥<strong>跑在你已有的硬件上</strong>——不需要为AI换一台新手机。</p>
+
+    <h3>镜-初（Mirror-Origin，代号·卡瓦格博）</h3>
+    <p>参考实现<strong>镜-初</strong>将于2026年9月发布：可跑的、源码公开的教学级PCE（Android）。卡瓦格博是梅里雪山无人可登顶的神山，我们以此名致敬——一位守护者，<strong>只为渡你入AI新时代</strong>。</p>
+
+    <h3>两条路</h3>
+    <div class="tblwrap">
+    <table class="roads">
+      <thead><tr><th>Agent OS</th><th>PCE</th></tr></thead>
+      <tbody>
+        <tr><td>随新手机出厂</td><td>跑在你已有的手机上</td></tr>
+        <tr><td>助理住在厂商账号里</td><td>助理不依赖任何账号而存在</td></tr>
+        <tr><td>记忆喂给平台的用户画像</td><td>记忆归你：本地存放、随时导出</td></tr>
+        <tr><td>隐私是条款里的一句承诺</td><td>隐私是架构里的一道闸门</td></tr>
+        <tr><td>锁进一家生态</td><td>跨生态中立——连别家Agent都成为它替你调用的资源</td></tr>
+        <tr><td>用自己的流程取代你的App</td><td>强化一切，取代无物</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p class="aph goldtext">承诺会被打破，架构不会。<br>主权与记忆，归于用户。</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    JadeAurum<span class="dot">·</span>Mirror Project<span class="dot">·</span>2026<span class="dot">·</span><a href="https://jadeaurum.com">jadeaurum.com</a><span class="dot">·</span><a href="https://github.com/MirrorPCE">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
